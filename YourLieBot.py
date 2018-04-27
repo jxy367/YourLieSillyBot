@@ -213,13 +213,15 @@ async def background_update():
 
 @client.event
 async def on_message(message):
+    await client.wait_until_ready()
     if message.author.bot:
         return
     global game_in_progress
     if game_in_progress:
         points, word = attempt_message(str(message.author.id), message.content)
         if points > 0:
-            #await message.channel.send(message.author.name + " scored " + str(points)+ " points for the word '" + word + "' !")
+            channel = client.get_channel(395765134171308032)  # Bot Test Channel
+            await channel.send(message.author.name + " scored " + str(points)+ " points for the word '" + word + "' !")
             if len(scoring_dictionary) == 0:
                 await message.channel.send("The game has ended.\n Final scores:\n" + get_scores())
                 reset_game()
