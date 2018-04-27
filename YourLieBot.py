@@ -219,8 +219,7 @@ async def on_message(message):
     if game_in_progress:
         points, word = attempt_message(str(message.author.id), message.content)
         if points > 0:
-            await message.channel.send(message.author.name + " scored " + str(points)
-                                       + " points for the word '" + word + "' !")
+            #await message.channel.send(message.author.name + " scored " + str(points)+ " points for the word '" + word + "' !")
             if len(scoring_dictionary) == 0:
                 await message.channel.send("The game has ended.\n Final scores:\n" + get_scores())
                 reset_game()
@@ -251,5 +250,6 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
+    client.loop.create_task(background_update())
 
 client.run(TOKEN)
