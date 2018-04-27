@@ -2,12 +2,8 @@ import discord
 from discord.ext import commands
 import asyncio
 from operator import itemgetter
-from pysubs2 import *
-import unidecode
-import os
 
-
-TOKEN = ''
+TOKEN = 'NDM5MzQ2NDQ2Njk3ODg5Nzky.DcR0yA.EjGPqA1pyaHVBxcnHCxLTDtwMkY'
 client = commands.Bot(command_prefix='$')
 
 scoring_dictionary = {}
@@ -34,7 +30,7 @@ def get_dictionary_from_file(file_name: str):
 def set_dictionary_to_file(my_dict: dict, file_name: str):
     with open(file_name, 'w') as my_file:
         for key in my_dict.keys():
-            my_file.write(key + ":" + str(my_dict[key] + "\n"))
+            my_file.write(key + ":" + str(my_dict[key]) + "\n")
 
 
 def get_progress():
@@ -49,7 +45,7 @@ def get_scores():
     update()
     scores_string = ""
     for key, value in sorted(player_points.items(), key=itemgetter(1), reverse=True):
-        scores_string = scores_string + key + " : " + str(value) + "\n"
+        scores_string = scores_string + client.get_user(int(key)).name + " : " + str(value) + "\n"
     return scores_string
 
 
@@ -89,7 +85,7 @@ def update():
         needs_update = False
 
 
-def reset():
+def reset_game():
     global current_points
     global total_player_points
     global player_points
@@ -169,8 +165,8 @@ async def scores(ctx):
 @client.command()
 async def reset(ctx, reset_phrase):
     if game_in_progress:
-        if reset_phrase is "AILYLIA":
-            reset()
+        if reset_phrase == "AILYLIA":
+            reset_game()
             await ctx.send("You have reset the game. Type '$start' to begin again")
         else:
             await ctx.send("Contact Jonathan to reset game")
@@ -182,9 +178,9 @@ async def reset(ctx, reset_phrase):
 async def end(ctx, end_phrase):
     global game_in_progress
     if game_in_progress:
-        if end_phrase is "Thank you for watching!":
+        if end_phrase == "ThankYouForWatching!":
             await ctx.send("The game has ended.\n Final scores:\n" + get_scores())
-            reset()
+            reset_game()
             await ctx.send("Type '$start' to begin again")
         else:
             await ctx.send("Contact Jonathan to end game")
@@ -217,6 +213,8 @@ async def background_update():
 
 @client.event
 async def on_message(message):
+    if message.author.bot:
+        return
     global game_in_progress
     if game_in_progress:
         points, word = attempt_message(str(message.author.id), message.content)
@@ -225,7 +223,7 @@ async def on_message(message):
                                        + " points for the word '" + word + "' !")
             if len(scoring_dictionary) == 0:
                 await message.channel.send("The game has ended.\n Final scores:\n" + get_scores())
-                reset()
+                reset_game()
                 await message.channel.send("Type '$start' to begin again")
     await client.process_commands(message)
 
@@ -238,10 +236,6 @@ async def on_ready():
     global total_points
     global scoring_dictionary
     global game_in_progress
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
 
     possible_player_scores = get_dictionary_from_file("PlayerScores.txt")
     if len(possible_player_scores) > 0:
@@ -253,3 +247,9 @@ async def on_ready():
         total_words = len(subtitles)
         game_in_progress = True
 
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
+
+client.run(TOKEN)
