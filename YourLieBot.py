@@ -45,7 +45,7 @@ def get_scores():
     update()
     scores_string = ""
     for key, value in sorted(player_points.items(), key=itemgetter(1), reverse=True):
-        scores_string = scores_string + client.get_user(int(key)).name + " : " + str(value) + "\n"
+        scores_string = scores_string + client.get_user(int(key)).display_name + " : " + str(value) + "\n"
     return scores_string
 
 
@@ -220,8 +220,12 @@ async def on_message(message):
     if game_in_progress:
         points, word = attempt_message(str(message.author.id), message.content)
         if points > 0:
+            if points == 1:
+                msg = message.author.name + " scored " + str(points)+ " point for the word '" + word + "' !"
+            else:
+                msg = message.author.name + " scored " + str(points) + " points for the word '" + word + "' !"
             channel = client.get_channel(395765134171308032)  # Bot Test Channel
-            await channel.send(message.author.name + " scored " + str(points)+ " points for the word '" + word + "' !")
+            await channel.send(msg)
             if len(scoring_dictionary) == 0:
                 await message.channel.send("The game has ended.\n Final scores:\n" + get_scores())
                 reset_game()
