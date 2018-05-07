@@ -231,8 +231,9 @@ async def help(ctx):
     embed = discord.Embed(title="Completion Bot", description="List of commands:", color=0xeee657)
 
     embed.add_field(name="$start", value="Attempts to start game", inline=False)
-    embed.add_field(name="$progress", value="Gives completion percentage", inline=False)
+    embed.add_field(name="$progress", value="Gives completion in various forms", inline=False)
     embed.add_field(name="$scores", value="Lists the current scores from highest to lowest", inline=False)
+    embed.add_field(name="$hint", value="Gives the first letter and frequency of the next most frequent word")
     embed.add_field(name="$reset reset_phrase", value="Resets game", inline=False)
     embed.add_field(name="$end end_phrase", value="Ends game and posts scores", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
