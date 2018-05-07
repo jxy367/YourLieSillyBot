@@ -124,7 +124,7 @@ def is_english_word(word):
 with open("EnglishWords.txt") as word_file:
     english_words = set(word.strip().lower() for word in word_file)
 
-new_subtitle_file = open("YourLieSubtitlesV2.txt", 'w')
+new_subtitle_file = open("SortedYourLieSubtitles.txt", 'w')
 num_yl_episodes = 22
 word_frequency_dictionary = {}
 
@@ -143,10 +143,11 @@ for i in range(1, num_yl_episodes + 1):
         text = text.strip()
         add_words(text)
 
-for key in word_frequency_dictionary.keys():
-    new_subtitle_file.write(key + ":" + str(word_frequency_dictionary[key]) + "\n")
+#for key in word_frequency_dictionary.keys():
+#    new_subtitle_file.write(key + ":" + str(word_frequency_dictionary[key]) + "\n")
 
-#for key, value in sorted(word_frequency_dictionary.items(), key=itemgetter(1), reverse = True):
-#    print(key, value)
+for key, value in sorted(word_frequency_dictionary.items(), key=lambda x: (-x[1],x[0])):
+    new_subtitle_file.write(key + ":" + str(word_frequency_dictionary[key]) + "\n")
+    print(key, value)
 
 new_subtitle_file.close()

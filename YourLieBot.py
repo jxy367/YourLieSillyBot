@@ -7,9 +7,12 @@ TOKEN = 'NDM5MzQ2NDQ2Njk3ODg5Nzky.DcR0yA.EjGPqA1pyaHVBxcnHCxLTDtwMkY'
 client = commands.Bot(command_prefix='$')
 
 scoring_dictionary = {}
+subtitle_frequency = {}
+num_ordered_words_found = 0
 total_words = 0
 total_points = 0
 total_player_points = 0
+next_word = ""
 player_points = {}
 needs_update = False
 game_in_progress = False
@@ -36,7 +39,8 @@ def set_dictionary_to_file(my_dict: dict, file_name: str):
 def get_progress():
     line1 = "Your server has found " + str(total_words - len(scoring_dictionary)) + " / " + str(total_words) + " words!\n"
     line2 = "Your server has found " + str(total_player_points) + " / " + str(total_points) + " points\n"
-    return line1+line2
+    line3 = "Your server has found the " + str(num_ordered_words_found) + " most frequent words\n"
+    return line1+line2+line3
 
 
 def get_scores():
@@ -47,6 +51,12 @@ def get_scores():
     for key, value in sorted(player_points.items(), key=itemgetter(1), reverse=True):
         scores_string = scores_string + client.get_user(int(key)).display_name + " : " + str(value) + "\n"
     return scores_string
+
+
+def get_hint():
+    line1 = "The next most frequent word was used " + str(subtitle_frequency[next_word]) + " times.\n"
+    line2 = "This word begins with '" + next_word[0] + "'\n"
+    return line1+line2
 
 
 def calculate_scoring():
@@ -114,6 +124,8 @@ def attempt_word(user_id: str, word: str):
         increment_player_score(user_id, points_scored)
         total_player_points += points_scored
         del scoring_dictionary[word]
+        if word == next_word:
+            find_next_word()
         needs_update = True
         return points_scored
     return 0
@@ -133,7 +145,23 @@ def attempt_message(user_id: str, message: str):
     return 0, ""
 
 
+def find_next_word():
+    global next_word
+    global subtitle_frequency
+    global scoring_dictionary
+    global num_ordered_words_found
+    count = 0
+    for key, value in sorted(subtitle_frequency.items(), key=lambda x: (-x[1], x[0])):
+        if key in scoring_dictionary.keys():
+            next_word = key
+            num_ordered_words_found = count
+            print(next_word)
+            break
+        else:
+            count += 1
+
 # Bot Commands
+
 
 @client.command()
 async def start(ctx):
@@ -158,6 +186,14 @@ async def progress(ctx):
 async def scores(ctx):
     if game_in_progress:
         await ctx.send(get_scores())
+    else:
+        await ctx.send("No game in progress")
+
+
+@client.command()
+async def hint(ctx):
+    if game_in_progress:
+        await ctx.send(get_hint())
     else:
         await ctx.send("No game in progress")
 
@@ -236,12 +272,14 @@ async def on_message(message):
 @client.event
 async def on_ready():
     global player_points
+    global subtitle_frequency
     global total_player_points
     global total_words
     global total_points
     global scoring_dictionary
     global game_in_progress
 
+    subtitle_frequency = get_dictionary_from_file("SortedYourLieSubtitles.txt")
     possible_player_scores = get_dictionary_from_file("PlayerScores.txt")
     if len(possible_player_scores) > 0:
         player_points = possible_player_scores
@@ -250,6 +288,7 @@ async def on_ready():
         total_points = total_player_points + sum(scoring_dictionary.values())
         subtitles = get_dictionary_from_file("YourLieSubtitlesV2.txt")
         total_words = len(subtitles)
+        find_next_word()
         game_in_progress = True
 
     print('Logged in as')
