@@ -159,6 +159,8 @@ def find_next_word():
             break
         else:
             count += 1
+    next_word = ""
+    num_ordered_words_found = count
 
 # Bot Commands
 
@@ -264,9 +266,14 @@ async def on_message(message):
             channel = client.get_channel(395765134171308032)  # Bot Test Channel
             await channel.send(msg)
             if len(scoring_dictionary) == 0:
+                await message.channel.send("Congratulations! You said most of the words in Your Lie in April!")
+                await message.channel.send("Since the game began, Jonathan completed the series 4 times!")
                 await message.channel.send("The game has ended.\n Final scores:\n" + get_scores())
                 reset_game()
-                await message.channel.send("Type '$start' to begin again")
+                await message.channel.send("Type '$start' to begin again\n")
+                await message.channel.send("And then everyone important died.")
+                await message.channel.send("Have fun Noah!")
+
     await client.process_commands(message)
 
 
