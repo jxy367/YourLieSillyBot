@@ -55,7 +55,7 @@ def get_scores():
 
 def get_hint():
     line1 = "The next most frequent word was used " + str(subtitle_frequency[next_word]) + " times.\n"
-    line2 = "This word begins with '" + next_word[0] + "'\n"
+    line2 = "This word begins with '" + next_word[0] + " and has a length of " + str(len(next_word)) + "." + "'\n"
     return line1+line2
 
 
@@ -162,6 +162,15 @@ def find_next_word():
     next_word = ""
     num_ordered_words_found = count
 
+
+async def reset_display_name():
+    for changed_guild in client.guilds:
+        if changed_guild.me.display_name != "GuuBot":
+            print(changed_guild.name)
+            print(changed_guild.me.display_name)
+            print("---")
+            await changed_guild.me.edit(nick=None)
+
 # Bot Commands
 
 
@@ -247,6 +256,7 @@ async def background_update():
     await client.wait_until_ready()
     while not client.is_closed():
         update()
+        await reset_display_name()
         await asyncio.sleep(60)
 
 
