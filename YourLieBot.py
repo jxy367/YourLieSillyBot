@@ -55,7 +55,7 @@ def get_scores():
 
 def get_hint():
     print(next_word)
-    print(subtitle_frequency)
+    print(subtitle_frequency[next_word])
     line1 = "The next most frequent word was used " + str(subtitle_frequency[next_word]) + " times.\n"
     line2 = "This word begins with '" + next_word[0] + " and has a length of " + str(len(next_word)) + "." + "'\n"
     return line1+line2
