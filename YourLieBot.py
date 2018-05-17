@@ -165,7 +165,7 @@ def find_next_word():
 
 async def reset_display_name():
     for changed_guild in client.guilds:
-        if changed_guild.me.display_name != "GuuBot":
+        if changed_guild.me.display_name != "Nicer Completion Bot":
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
