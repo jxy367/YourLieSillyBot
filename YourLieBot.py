@@ -54,8 +54,6 @@ def get_scores():
 
 
 def get_hint():
-    global next_word
-    global subtitle_frequency
     print(next_word)
     print(subtitle_frequency[next_word])
     line1 = "The next most frequent word was used " + str(subtitle_frequency[next_word]) + " times.\n"
@@ -163,7 +161,6 @@ def find_next_word():
             break
         else:
             count += 1
-    next_word = ""
     num_ordered_words_found = count
 
 
