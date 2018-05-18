@@ -4,7 +4,7 @@ import asyncio
 from operator import itemgetter
 
 TOKEN = 'NDM5MzQ2NDQ2Njk3ODg5Nzky.DcR0yA.EjGPqA1pyaHVBxcnHCxLTDtwMkY'
-client = commands.Bot(command_prefix='$')
+client = commands.Bot(command_prefix='YL$')
 
 scoring_dictionary = {}
 subtitle_frequency = {}
@@ -213,9 +213,9 @@ async def reset(ctx, reset_phrase):
     if game_in_progress:
         if reset_phrase == "AILYLIA":
             reset_game()
-            await ctx.send("You have reset the game. Type '$start' to begin again")
+            await ctx.send("You have reset the game. Type 'YL$start' to begin again")
         else:
-            await ctx.send("Contact Jonathan to reset game")
+            await ctx.send("Contact Jonathan/Chris to reset game")
     else:
         await ctx.send("No game in progress")
 
@@ -227,7 +227,7 @@ async def end(ctx, end_phrase):
         if end_phrase == "ThankYouForWatching!":
             await ctx.send("The game has ended.\n Final scores:\n" + get_scores())
             reset_game()
-            await ctx.send("Type '$start' to begin again")
+            await ctx.send("Type 'YL$start' to begin again")
         else:
             await ctx.send("Contact Jonathan to end game")
     else:
@@ -237,16 +237,22 @@ client.remove_command('help')
 
 
 @client.command()
+async def echo(ctx, phrase):
+    await ctx.send(phrase)
+
+
+@client.command()
 async def help(ctx):
     embed = discord.Embed(title="Completion Bot", description="List of commands:", color=0xeee657)
 
-    embed.add_field(name="$start", value="Attempts to start game", inline=False)
-    embed.add_field(name="$progress", value="Gives completion in various forms", inline=False)
-    embed.add_field(name="$scores", value="Lists the current scores from highest to lowest", inline=False)
-    embed.add_field(name="$hint", value="Gives the first letter and frequency of the next most frequent word")
-    embed.add_field(name="$reset reset_phrase", value="Resets game", inline=False)
-    embed.add_field(name="$end end_phrase", value="Ends game and posts scores", inline=False)
-    embed.add_field(name="$help", value="Gives this message", inline=False)
+    embed.add_field(name="YL$start", value="Attempts to start game", inline=False)
+    embed.add_field(name="YL$progress", value="Gives completion in various forms", inline=False)
+    embed.add_field(name="YL$scores", value="Lists the current scores from highest to lowest", inline=False)
+    embed.add_field(name="YL$hint", value="Gives the first letter and frequency of the next most frequent word")
+    embed.add_field(name="YL$reset reset_phrase", value="Resets game", inline=False)
+    embed.add_field(name="YL$end end_phrase", value="Ends game and posts scores", inline=False)
+    embed.add_field(name="YL$echo phrase", value="This doesn't need explanation", inline=False)
+    embed.add_field(name="YL$help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
 
@@ -279,7 +285,7 @@ async def on_message(message):
                 await message.channel.send("Since the game began, Jonathan completed the series 4 times!")
                 await message.channel.send("The game has ended.\n Final scores:\n" + get_scores())
                 reset_game()
-                await message.channel.send("Type '$start' to begin again\n")
+                await message.channel.send("Type 'YL$start' to begin again\n")
                 await message.channel.send("And then everyone important died.")
                 await message.channel.send("Have fun Noah!")
 
